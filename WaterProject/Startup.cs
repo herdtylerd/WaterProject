@@ -35,6 +35,9 @@ namespace WaterProject
            {
                options.UseSqlite(Configuration["ConnectionStrings:WaterDBConnection"]);
            });
+
+            // Add this
+            services.AddScoped<IWaterProjectRepository, EFWaterProjectRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -9,14 +9,18 @@ namespace WaterProject.Controllers
 {
     public class HomeController : Controller
     {
-        // Set up the next few lines to connect function
-        private WaterProjectContext context { get; set; }
+        // The controller no longer accesses the context file directly
+        private IWaterProjectRepository repo;
 
-        public HomeController(WaterProjectContext temp) => context = temp;
+        public HomeController (IWaterProjectRepository temp)
+        {
+            repo = temp;
+        }
+
 
         public IActionResult Index()
         {
-            var blah = context.Projects.ToList();
+            var blah = repo.Projects.ToList();
 
             return View(blah);
         }
