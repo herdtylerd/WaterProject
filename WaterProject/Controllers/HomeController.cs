@@ -38,12 +38,7 @@ namespace WaterProject.Controllers
                 }
             };
 
-            var blah = repo.Projects
-                .OrderBy(p => p.ProjectName)
-                .Skip((pageNum - 1) * pageSize)
-                .Take(pageSize);
-
-            return View(blah);
+            return View(x);
         }
     }
 }
