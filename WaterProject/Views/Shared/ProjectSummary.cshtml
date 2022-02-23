@@ -11,7 +11,7 @@
             Impact: @Model.ProjectImpact Served
         </span>
     </div>
-    
+
 
     <ul>
         <li>Project Type: @Model.ProjectType</li>
@@ -19,4 +19,17 @@
         <li>Project Phase: @Model.ProjectPhase</li>
         <li>Project Status: @Model.ProjectFunctionalityStatus</li>
     </ul>
+
+    <form method="post" asp-page="/Donate">
+        
+        <input type="hidden" asp-for="@Model.ProjectId" />
+
+        <input type="hidden" name="returnUrl" value="@ViewContext.HttpContext.Request.PathAndQuery()" />
+
+        <span class="card-text">
+            <button type="submit" class="btn btn-success btn-sm float-end">Donate</button>
+        </span>
+    </form>
 </div>
+
+
