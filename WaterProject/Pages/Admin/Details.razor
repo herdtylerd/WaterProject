@@ -1,0 +1,36 @@
+﻿@page "/admin/projects/details/{id:long}"
+
+<h3 class="bg-info text-white text-center p-1">Details</h3>
+
+<table class="table table-sm table-bordered table-striped">
+    <tbody>
+        <tr><th>Project ID:</th><td>@p.ProjectId</td></tr>
+        <tr><th>Name:</th><td>@p.ProjectName</td></tr>
+        <tr><th>Type:</th><td>@p.ProjectType</td></tr>
+        <tr><th>Regional Program</th><td>@p.ProjectRegionalProgram</td></tr>
+        <tr><th>Impact:</th><td>@p.ProjectImpact</td></tr>
+        <tr><th>Phase:</th><td>@p.ProjectPhase</td></tr>
+        <tr><th>Functionality Status:</th><td>@p.ProjectFunctionalityStatus</td></tr>
+    </tbody>
+</table>
+
+<NavLink class="btn btn-warning" href="@EditUrl">Edit</NavLink>
+<NavLink class="btn btn-secondary" href="/admin/projects">Back</NavLink>
+
+@code {
+
+            [Inject]
+            public IWaterProjectRepository repo { get; set; }
+
+            [Parameter]
+            public long Id { get; set; }
+
+    public Project p { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            p = repo.Projects.FirstOrDefault(x => x.ProjectId == Id);
+        }
+
+        public string EditUrl => $"/admin/projects/edit/{p.ProjectId }";
+}

@@ -1,8 +1,71 @@
 ﻿@page "/admin/projects"
 @page "/admin"
+@inherits OwningComponentBase<IWaterProjectRepository>
 
-<h3>Projects</h3>
+<table class="table table-sm table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Project ID</th>
+            <th>Project Name</th>
+            <th>Regional Program</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (ProjectData?.Count() > 0)
+        {
+            @foreach (Project p in ProjectData)
+            {
+                <tr>
+                    <td>@p.ProjectId</td>
+                    <td>@p.ProjectName</td>
+                    <td>@p.ProjectRegionalProgram</td>
+
+                    <td>
+                        <NavLink class="btn btn-info btn-sm" href="@GetDetailsUrl(p.ProjectId)">Details</NavLink>
+                    </td>
+                    <td>
+                        <NavLink class="btn btn-warning btn-sm" href="@GetEditUrl(p.ProjectId)">Edit</NavLink>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="@(x => RemoveProject(p))">Delete</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No Projects</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<NavLink class="btn btn-primary" href="/admin/projects/create">Create</NavLink>
 
 @code {
+
+    public IWaterProjectRepository repo => Service;
+    public IEnumerable<Project> ProjectData { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+
+    public async Task UpdateData()
+    {
+        ProjectData = await repo.Projects.ToListAsync();
+    }
+
+    public string GetDetailsUrl(long id) => $"/admin/projects/details/{id}";
+    public string GetEditUrl(long id) => $"/admin/projects/edit/{id}";
+
+    public async Task RemoveProject(Project p)
+    {
+        repo.DeleteProject(p);
+        await UpdateData();
+    }
 
 }

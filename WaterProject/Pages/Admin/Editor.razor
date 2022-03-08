@@ -1,0 +1,98 @@
+﻿@page "/admin/projects/edit/{id:long}"
+@page "/admin/projects/create"
+@inherits OwningComponentBase<IWaterProjectRepository>
+
+<style>
+    div.validation-message {color: rgb(220,53,69); font-weight:500}
+</style>
+
+<h3 class="bg-@ThemeColor text-white text-center p-1 ">@TitleText a Project</h3>
+
+<EditForm Model="p" OnValidSubmit="SaveProject">
+
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <div class="form-group">
+        <label>Project Id</label>
+        <input class="form-control" disabled value="@p.ProjectId" />
+    </div>
+
+    <div class="form-group">
+        <label>Name</label>
+        <ValidationMessage For="@(() => p.ProjectName)"></ValidationMessage>
+        <InputText class="form-control" @bind-Value="p.ProjectName"></InputText>
+    </div>
+
+    <div class="form-group">
+        <label>Type</label>
+        <ValidationMessage For="@(() => p.ProjectType)"></ValidationMessage>
+        <InputText class="form-control" @bind-Value="p.ProjectType"></InputText>
+    </div>
+
+    <div class="form-group">
+        <label>Regional Program</label>
+        <ValidationMessage For="@(() => p.ProjectRegionalProgram)"></ValidationMessage>
+        <InputText class="form-control" @bind-Value="p.ProjectRegionalProgram"></InputText>
+    </div>
+
+    <div class="form-group">
+        <label>Impact</label>
+        <ValidationMessage For="@(() => p.ProjectImpact)"></ValidationMessage>
+        <InputNumber class="form-control" @bind-Value="p.ProjectImpact"></InputNumber>
+    </div>
+
+    <div class="form-group">
+        <label>Phase</label>
+        <ValidationMessage For="@(() => p.ProjectPhase)"></ValidationMessage>
+        <InputText class="form-control" @bind-Value="p.ProjectPhase"></InputText>
+    </div>
+
+    <div class="form-group">
+        <label>Functionality Status</label>
+        <ValidationMessage For="@(() => p.ProjectFunctionalityStatus)"></ValidationMessage>
+        <InputText class="form-control" @bind-Value="p.ProjectFunctionalityStatus"></InputText>
+    </div><br />
+
+    <button type="submit" class="btn btn-@ThemeColor">Save</button>
+    <NavLink class="btn btn-secondary" href="/admin/projects">Cancel</NavLink>
+
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public long Id { get; set; } = 0;
+
+    public string ThemeColor => Id == 0 ? "primary" : "warning";
+    public string TitleText => Id == 0 ? "Create" : "Edit";
+
+    public Project p { get; set; } = new Project();
+
+    public IWaterProjectRepository repo => Service;
+
+    protected override void OnParametersSet()
+    {
+        if (Id != 0) //Existing project
+        {
+            p = repo.Projects.FirstOrDefault(x => x.ProjectId == Id);
+        }
+    }
+
+    public void SaveProject()
+    {
+        if (Id == 0) //New Project
+        {
+            repo.CreateProject(p);
+        }
+        else
+        {
+            repo.SaveProject(p);
+        }
+
+        NavManager.NavigateTo("/admin/projects");
+    }
+
+    [Inject]
+    public NavigationManager NavManager { get; set; }
+
+}
